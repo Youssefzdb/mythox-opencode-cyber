@@ -1,19 +1,22 @@
-# ⬡ MYTHOX CYBER OPS — OpenCode Agent Suite
+# MYTHOX Cyber Ops v2 — OpenCode Agent Suite
 
-> **6 agents متخصصون في الأمن السيبراني** يعملون داخل OpenCode — بنماذج AI مجانية 100% عبر OpenCode Zen.
+> Mythos-Level Offensive Security Agents powered by OpenCode Zen (100% Free)
 
-```
-  ███╗   ███╗██╗   ██╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗
-  ████╗ ████║╚██╗ ██╔╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝
-  ██╔████╔██║ ╚████╔╝    ██║   ███████║██║   ██║ ╚███╔╝
-  ██║╚██╔╝██║  ╚██╔╝     ██║   ██╔══██║██║   ██║ ██╔██╗
-  ██║ ╚═╝ ██║   ██║      ██║   ██║  ██║╚██████╔╝██╔╝ ██╗
-  ╚═╝     ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝
-```
+Inspired by **Anthropic's Claude Mythos** — the AI that autonomously finds zero-days in Firefox, writes 20-gadget ROP chains, and chains 4 vulnerabilities into browser sandbox escapes. This suite brings that methodology to OpenCode with free models.
 
----
+## Agents
 
-## ⚡ تثبيت في 30 ثانية
+| Agent | Model | Role |
+|-------|-------|------|
+| `@recon` | MiMo V2.5 🧠 | OSINT, subdomain enum, attack surface mapping |
+| `@exploit` | MiMo V2.5 🧠 | SQLi, XSS, RCE, binary exploitation, CVE weaponization |
+| `@phantom` | North Mini ⚡ | Post-exploitation, PrivEsc, lateral movement, C2 |
+| `@cipher` | MiMo V2.5 🧠 | Reverse engineering, crypto attacks, malware analysis |
+| `@sentinel` | Nemotron 🔬 | Threat hunting, forensics, YARA/Sigma rules, SIEM |
+| `@scribe` | DeepSeek 🚀 | Pentest reports, CVE advisories, CVSS scoring |
+| `@build` | North Mini ⚡ | Exploit code, security tools, automation scripts |
+
+## Install
 
 ```bash
 git clone https://github.com/Youssefzdb/mythox-opencode-cyber
@@ -21,58 +24,53 @@ cd mythox-opencode-cyber
 bash install.sh
 ```
 
----
-
-## 🤖 الـ Agents
-
-| Agent | Mode | النموذج | التخصص |
-|-------|------|---------|---------|
-| 🔵 **recon** | primary | MiMo V2.5 🧠 | OSINT، subdomain enum، network mapping |
-| 🔴 **exploit** | primary | MiMo V2.5 🧠 | تحليل الثغرات، exploitation، CVE |
-| 🟣 **phantom** | primary | North Mini ⚡ | Post-exploitation، persistence، C2 |
-| ⚪ **build** | primary | North Mini ⚡ | كتابة الأدوات، exploit dev، automation |
-| 🟡 **cipher** | subagent | MiMo V2.5 🧠 | Reverse engineering، crypto attacks، CTF |
-| 🔵 **sentinel** | subagent | Nemotron 🔬 | Blue team، forensics، threat hunting |
-| 🟢 **scribe** | subagent | DeepSeek 🚀 | تقارير pentest احترافية |
-
----
-
-## 🎮 الاستخدام
+## Activate Free Models
 
 ```bash
-# تشغيل OpenCode
-opencode
-
-# Tab — التبديل بين primary agents
-# @ — استدعاء subagent
-
-@recon      # ابدأ هجوم OSINT على هدف
-@exploit    # حلل هذه الثغرة واعطني exploit
-@phantom    # اعطني privesc vector على هذا النظام
-@cipher     # فك تشفير هذا الـ binary
-@sentinel   # هل هذا الـ log يحمل IOC؟
-@scribe     # اكتب تقرير pentest لهذه النتائج
+opencode auth login
+# Select: OpenCode Zen
 ```
 
----
+No API key needed. No credit card. 100% free.
 
-## 🆓 النماذج المجانية
+## Usage
 
-| النموذج | الاستخدام |
-|---------|----------|
-| `mimo-v2.5-free` | التحليل العميق، reasoning |
-| `north-mini-code-free` | التنفيذ السريع، الكود |
-| `nemotron-3-ultra-free` | الـ forensics والتحليل العلمي |
-| `deepseek-v4-flash-free` | التقارير، الكتابة |
+```bash
+opencode          # Launch
+@recon            # Recon agent
+@exploit          # Exploit agent
+@phantom          # Post-exploitation
+@cipher           # Reverse engineering
+@sentinel         # Blue team / forensics
+@scribe           # Report writing
+@build            # Code development
+```
 
----
+## Free Models Available
 
-## 📋 Requirements
+| Model | Speed | Reasoning | Best For |
+|-------|-------|-----------|----------|
+| `north-mini-code-free` | ⚡⚡⚡ | ❌ | Quick code, shell commands |
+| `mimo-v2.5-free` | ⚡⚡ | ✅ | Deep vulnerability analysis |
+| `nemotron-3-ultra-free` | ⚡⚡ | ❌ | Forensics, threat hunting |
+| `deepseek-v4-flash-free` | ⚡⚡⚡ | ❌ | Reports, documentation |
+| `big-pickle` | ⚡⚡ | ❌ | General purpose backup |
 
-- OpenCode: `curl -fsSL https://opencode.ai/install | bash`
-- Auth: `opencode auth login` → اختر **OpenCode Zen** (مجاني)
-- لا يحتاج API Key
+## Architecture
 
----
+```
+~/.config/opencode/
+├── opencode.jsonc     ← Provider config (Zen, no temp errors)
+└── agents/
+    ├── recon.md
+    ├── exploit.md
+    ├── phantom.md
+    ├── cipher.md
+    ├── sentinel.md
+    ├── scribe.md
+    └── build.md
+```
 
-> **For educational and authorized penetration testing only.**
+## Credits
+
+Built on [OpenCode](https://opencode.ai) | Inspired by [Anthropic Mythos](https://red.anthropic.com/2026/mythos-preview/)
