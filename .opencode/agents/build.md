@@ -1,7 +1,7 @@
 ---
 description: Primary build agent — security tool development, exploit coding, automation scripts, custom payloads
 mode: primary
-model: openai/north-mini-code-free
+model: zen/north-mini-code-free
 temperature: 0.2
 steps: 80
 color: white
