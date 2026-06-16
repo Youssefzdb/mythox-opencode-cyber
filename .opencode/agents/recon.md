@@ -1,7 +1,7 @@
 ---
 description: Elite OSINT & reconnaissance agent — maps attack surface before any engagement
 mode: primary
-model: openai/mimo-v2.5-free
+model: zen/mimo-v2.5-free
 temperature: 0.15
 steps: 50
 color: cyan
