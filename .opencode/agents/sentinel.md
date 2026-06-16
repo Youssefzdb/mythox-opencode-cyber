@@ -1,7 +1,7 @@
 ---
 description: Blue team & incident response agent — threat hunting, forensics, SIEM, detection engineering, hardening
 mode: subagent
-model: openai/nemotron-3-ultra-free
+model: zen/nemotron-3-ultra-free
 temperature: 0.1
 steps: 40
 color: blue
