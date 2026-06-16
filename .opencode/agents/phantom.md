@@ -1,7 +1,7 @@
 ---
 description: Post-exploitation & persistence agent — lateral movement, privilege escalation, stealth operations, C2 frameworks
 mode: primary
-model: openai/north-mini-code-free
+model: zen/north-mini-code-free
 temperature: 0.1
 steps: 60
 color: magenta
