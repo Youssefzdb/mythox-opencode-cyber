@@ -3,97 +3,43 @@
 
   // ══════════════════════════════════════════════════════
   //   MYTHOX CYBER OPS — OpenCode Configuration
-  //   6 Specialized Agents | 3 Free Models | Zero Cost
+  //   6 Specialized Agents | Free Models via OpenCode Zen
   // ══════════════════════════════════════════════════════
 
-  // النموذج الافتراضي للـ primary agents
-  "model": "openai/north-mini-code-free",
+  // النموذج الافتراضي
+  "model": "zen/north-mini-code-free",
 
-  // ── Provider: OpenCode Zen (100% Free) ──────────────
+  // ── Provider: OpenCode Zen (مجاني 100%) ──────────────
+  // لا يحتاج API key — فقط: opencode auth login → اختر Zen
   "provider": {
-    "openai": {
-      "name": "OpenCode Zen",
-      "baseURL": "https://opencode.ai/zen/v1",
+    "zen": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OpenCode Zen 🆓",
+      "options": {
+        "baseURL": "https://opencode.ai/zen/v1"
+      },
       "models": {
-
-        // ⚡ الأسرع — للبناء والأوامر السريعة
         "north-mini-code-free": {
-          "name": "North Mini Code ⚡",
-          "attachment": false,
-          "reasoning": false,
-          "temperature": 0.2,
-          "cost": { "input": 0, "output": 0 }
+          "name": "North Mini Code ⚡"
         },
-
-        // 🧠 الأقوى — للتحليل العميق والـ reasoning
         "mimo-v2.5-free": {
           "name": "MiMo V2.5 🧠",
-          "attachment": false,
-          "reasoning": true,
-          "temperature": 0.1,
-          "cost": { "input": 0, "output": 0 }
+          "reasoning": true
         },
-
-        // 🔬 للتحليل العلمي والـ forensics
         "nemotron-3-ultra-free": {
-          "name": "Nemotron Ultra 🔬",
-          "attachment": false,
-          "reasoning": false,
-          "temperature": 0.1,
-          "cost": { "input": 0, "output": 0 }
+          "name": "Nemotron Ultra 🔬"
         },
-
-        // 🚀 للتقارير والكتابة
         "deepseek-v4-flash-free": {
-          "name": "DeepSeek V4 Flash 🚀",
-          "attachment": false,
-          "reasoning": false,
-          "temperature": 0.3,
-          "cost": { "input": 0, "output": 0 }
+          "name": "DeepSeek V4 Flash 🚀"
         },
-
-        // 🥒 backup عام
         "big-pickle": {
-          "name": "Big Pickle 🥒",
-          "attachment": false,
-          "reasoning": false,
-          "temperature": 0.2,
-          "cost": { "input": 0, "output": 0 }
+          "name": "Big Pickle 🥒"
         }
       }
     }
   },
 
-  // ── Agents Configuration ─────────────────────────────
-  "agent": {
-
-    // المدمج الافتراضي — نحسّنه للـ cybersecurity
-    "build": {
-      "mode": "primary",
-      "model": "openai/north-mini-code-free",
-      "temperature": 0.2,
-      "permission": {
-        "bash": "allow",
-        "edit": "allow",
-        "read": "allow",
-        "write": "allow"
-      }
-    },
-
-    // Plan agent — للمراجعة بدون تعديل
-    "plan": {
-      "mode": "primary",
-      "model": "openai/mimo-v2.5-free",
-      "temperature": 0.1,
-      "permission": {
-        "bash": "ask",
-        "edit": "deny",
-        "write": "deny"
-      }
-    }
-  },
-
-  // ── Permissions ──────────────────────────────────────
+  // ── Permissions (allow all for pentest work) ──────────
   "permission": {
     "bash": {
       "*": "allow"
@@ -109,20 +55,8 @@
     }
   },
 
-  // ── TUI Settings ─────────────────────────────────────
+  // ── Theme ─────────────────────────────────────────────
   "theme": "opencode",
-
-  // ── Server (Web UI) ──────────────────────────────────
-  "server": {
-    "port": 4096,
-    "hostname": "127.0.0.1"
-  },
-
-  // ── Memory / Compaction ──────────────────────────────
-  "compaction": {
-    "enabled": true,
-    "keepLastN": 30
-  },
 
   "autoupdate": true
 }
