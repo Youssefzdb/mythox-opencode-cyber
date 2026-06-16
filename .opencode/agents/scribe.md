@@ -1,7 +1,7 @@
 ---
 description: Professional report writing agent — pentest reports, CVE advisories, executive summaries, remediation guides
 mode: subagent
-model: openai/deepseek-v4-flash-free
+model: zen/deepseek-v4-flash-free
 temperature: 0.3
 steps: 30
 color: green
