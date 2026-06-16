@@ -1,100 +1,151 @@
 #!/bin/bash
-# ═══════════════════════════════════════════════════════
-#   MYTHOX CYBER OPS — OpenCode Setup
-#   تثبيت الـ agents وإعداد البيئة كاملاً
-# ═══════════════════════════════════════════════════════
+# ═══════════════════════════════════════════════════════════════
+#   MYTHOX CYBER OPS v2 — OpenCode Agent Suite
+#   Mythos-Level Offensive Security Agents | Free via Zen
+# ═══════════════════════════════════════════════════════════════
 
-R='\033[0;31m' G='\033[0;32m' C='\033[0;36m' Y='\033[1;33m' M='\033[0;35m' NC='\033[0m' B='\033[1m'
+set -e
 
-banner() {
-echo -e "${C}"
-cat << 'EOF'
-  ███╗   ███╗██╗   ██╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗
-  ████╗ ████║╚██╗ ██╔╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝
-  ██╔████╔██║ ╚████╔╝    ██║   ███████║██║   ██║ ╚███╔╝
-  ██║╚██╔╝██║  ╚██╔╝     ██║   ██╔══██║██║   ██║ ██╔██╗
-  ██║ ╚═╝ ██║   ██║      ██║   ██║  ██║╚██████╔╝██╔╝ ██╗
-  ╚═╝     ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝
-         CYBER OPS — OpenCode Agent Suite
-EOF
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+ARCH=$(uname -m)
+VERSION="1.17.7"
+
+echo ""
+echo -e "${CYAN}${BOLD}"
+cat << 'BANNER'
+ ███╗   ███╗██╗   ██╗████████╗██╗  ██╗ ██████╗ ██╗  ██╗
+ ████╗ ████║╚██╗ ██╔╝╚══██╔══╝██║  ██║██╔═══██╗╚██╗██╔╝
+ ██╔████╔██║ ╚████╔╝    ██║   ███████║██║   ██║ ╚███╔╝
+ ██║╚██╔╝██║  ╚██╔╝     ██║   ██╔══██║██║   ██║ ██╔██╗
+ ██║ ╚═╝ ██║   ██║      ██║   ██║  ██║╚██████╔╝██╔╝ ██╗
+ ╚═╝     ╚═╝   ╚═╝      ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝
+          CYBER OPS v2 — Mythos-Level Agents
+BANNER
 echo -e "${NC}"
-}
+
+# ── Step 1: Install OpenCode ─────────────────────────────────
+echo -e "${BOLD}[1/4] Installing OpenCode ${VERSION}...${NC}"
+
+OPENCODE_BIN=""
+
+# Check if already installed
+if command -v opencode &>/dev/null; then
+    CURRENT=$(opencode --version 2>/dev/null || echo "unknown")
+    echo -e "  ${GREEN}✔ Already installed: v${CURRENT}${NC}"
+    OPENCODE_BIN=$(which opencode)
+else
+    # Detect architecture
+    case "$ARCH" in
+        aarch64|arm64)
+            BINARY_URL="https://github.com/anomalyco/opencode/releases/download/v${VERSION}/opencode-linux-arm64-musl.tar.gz"
+            ;;
+        x86_64|amd64)
+            BINARY_URL="https://github.com/anomalyco/opencode/releases/download/v${VERSION}/opencode-linux-x64-musl.tar.gz"
+            ;;
+        *)
+            echo -e "  ${RED}✗ Unsupported architecture: $ARCH${NC}"
+            exit 1
+            ;;
+    esac
+
+    echo -e "  Arch: ${CYAN}${ARCH}${NC}"
+    echo -e "  Downloading from GitHub releases..."
+
+    curl -fsSL "$BINARY_URL" -o /tmp/opencode.tar.gz
+    tar -xzf /tmp/opencode.tar.gz -C /tmp/
+    rm -f /tmp/opencode.tar.gz
+
+    BINARY=$(find /tmp -maxdepth 2 -name "opencode" -type f 2>/dev/null | head -1)
+    if [ -z "$BINARY" ]; then
+        echo -e "  ${RED}✗ Binary not found after extraction${NC}"
+        exit 1
+    fi
+
+    # Remove old installation if it's a directory
+    if [ -d "/usr/local/bin/opencode" ]; then
+        rm -rf /usr/local/bin/opencode
+    fi
+
+    chmod +x "$BINARY"
+    cp "$BINARY" /usr/local/bin/opencode
+    rm -f "$BINARY"
+    OPENCODE_BIN="/usr/local/bin/opencode"
+
+    INSTALLED_VERSION=$(opencode --version 2>/dev/null || echo "unknown")
+    echo -e "  ${GREEN}✔ Installed: v${INSTALLED_VERSION}${NC}"
+fi
+
+# ── Step 2: Install Config ───────────────────────────────────
+echo ""
+echo -e "${BOLD}[2/4] Installing configuration...${NC}"
+
+CONFIG_DIR="$HOME/.config/opencode"
+mkdir -p "$CONFIG_DIR"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-GLOBAL_CONFIG="${HOME}/.config/opencode"
-PROJECT_DIR="${PWD}"
 
-banner
+# Remove old/corrupt config
+rm -f "$CONFIG_DIR/opencode.jsonc"
+cp "$SCRIPT_DIR/opencode.jsonc" "$CONFIG_DIR/opencode.jsonc"
+echo -e "  ${GREEN}✔ Config installed → ${CONFIG_DIR}/opencode.jsonc${NC}"
 
-# ── 1. OpenCode Installation ────────────────────────────
-echo -e "${Y}[1/4] Checking OpenCode...${NC}"
-if command -v opencode &>/dev/null; then
-  echo -e "${G}  ✔ OpenCode: $(opencode --version 2>/dev/null || echo installed)${NC}"
-else
-  echo -e "${C}  Installing OpenCode...${NC}"
-  curl -fsSL https://opencode.ai/install | bash 2>/dev/null || \
-  npm install -g opencode-ai 2>/dev/null || \
-  { echo -e "${R}  ✘ Install failed. Run: npm install -g opencode-ai${NC}"; }
-fi
+# ── Step 3: Install Agents ───────────────────────────────────
+echo ""
+echo -e "${BOLD}[3/4] Installing cyber agents...${NC}"
 
-# ── 2. Global Config ────────────────────────────────────
-echo -e "${Y}[2/4] Installing global config...${NC}"
-mkdir -p "$GLOBAL_CONFIG/agents"
+GLOBAL_AGENTS="$HOME/.config/opencode/agents"
+PROJECT_AGENTS="$SCRIPT_DIR/.opencode/agents"
 
-# Backup existing config
-[ -f "$GLOBAL_CONFIG/opencode.jsonc" ] && \
-  cp "$GLOBAL_CONFIG/opencode.jsonc" "$GLOBAL_CONFIG/opencode.jsonc.bak" && \
-  echo -e "${C}  ↳ Backup: opencode.jsonc.bak${NC}"
+mkdir -p "$GLOBAL_AGENTS"
+mkdir -p "$SCRIPT_DIR/.opencode/agents"
 
-cp "$SCRIPT_DIR/opencode.jsonc" "$GLOBAL_CONFIG/opencode.jsonc"
-echo -e "${G}  ✔ Config installed → $GLOBAL_CONFIG/opencode.jsonc${NC}"
-
-# ── 3. Agents Installation ──────────────────────────────
-echo -e "${Y}[3/4] Installing cyber agents...${NC}"
-
-AGENTS_SRC="$SCRIPT_DIR/.opencode/agents"
-AGENTS_GLOBAL="$GLOBAL_CONFIG/agents"
-AGENTS_PROJECT="$PROJECT_DIR/.opencode/agents"
-
-# Install globally
-mkdir -p "$AGENTS_GLOBAL"
-for agent in "$AGENTS_SRC"/*.md; do
-  name=$(basename "$agent")
-  cp "$agent" "$AGENTS_GLOBAL/$name"
-  echo -e "${G}  ✔ [GLOBAL] $name${NC}"
+for agent in recon exploit phantom cipher sentinel scribe build; do
+    SRC="$SCRIPT_DIR/.opencode/agents/${agent}.md"
+    if [ -f "$SRC" ]; then
+        cp "$SRC" "$GLOBAL_AGENTS/${agent}.md"
+        echo -e "  ${GREEN}✔ [GLOBAL] ${agent}${NC}"
+    else
+        echo -e "  ${RED}✗ Missing: ${agent}.md${NC}"
+    fi
 done
 
-# Install in current project too
-mkdir -p "$AGENTS_PROJECT"
-for agent in "$AGENTS_SRC"/*.md; do
-  name=$(basename "$agent")
-  cp "$agent" "$AGENTS_PROJECT/$name"
-  echo -e "${G}  ✔ [PROJECT] $name${NC}"
-done
-
-# ── 4. Zen Auth ─────────────────────────────────────────
-echo -e "${Y}[4/4] OpenCode Zen authentication...${NC}"
-echo -e "  ${C}Select 'OpenCode Zen' for free models (no API key needed)${NC}"
+# ── Step 4: Auth ─────────────────────────────────────────────
 echo ""
-read -p "  Login now? [Y/n] " yn
-if [[ "$yn" != "n" && "$yn" != "N" ]]; then
-  opencode auth login 2>/dev/null || echo -e "${Y}  Run manually: opencode auth login${NC}"
-fi
-
-# ── Summary ─────────────────────────────────────────────
+echo -e "${BOLD}[4/4] OpenCode Zen authentication...${NC}"
+echo -e "  ${YELLOW}For free models (no API key needed):${NC}"
+echo -e "  Run: ${CYAN}opencode auth login${NC}"
+echo -e "  → Select '${BOLD}OpenCode Zen${NC}'"
 echo ""
-echo -e "${G}${B}"
-echo "  ════════════════════════════════════════"
-echo "   MYTHOX AGENTS ACTIVE"
-echo "  ════════════════════════════════════════"
+
+echo -e "${BOLD}${GREEN}"
+cat << 'DONE'
+  ════════════════════════════════════════════════════
+   MYTHOX v2 — AGENTS ONLINE
+  ════════════════════════════════════════════════════
+
+  Start:    opencode
+  Auth:     opencode auth login  (select Zen for free)
+
+  @recon    → OSINT & attack surface mapping
+  @exploit  → Vulnerability analysis & exploitation
+  @phantom  → Post-exploitation & persistence
+  @cipher   → Reverse engineering & cryptography
+  @sentinel → Blue team, forensics & threat hunting
+  @scribe   → Professional pentest reports
+  @build    → Exploit & tool development
+
+  Free Models via Zen:
+    ⚡ north-mini-code-free  (fastest)
+    🧠 mimo-v2.5-free        (smartest — Mythos-level reasoning)
+    🔬 nemotron-3-ultra-free (deep analysis)
+    🚀 deepseek-v4-flash-free (reports)
+    🥒 big-pickle            (backup)
+  ════════════════════════════════════════════════════
+DONE
 echo -e "${NC}"
-echo -e "  ${C}Tab${NC}       → Switch primary agents (recon/exploit/phantom/build/plan)"
-echo -e "  ${C}@recon${NC}    → OSINT & attack surface mapping"
-echo -e "  ${C}@exploit${NC}  → Vulnerability analysis & exploitation"
-echo -e "  ${C}@phantom${NC}  → Post-exploitation & persistence"
-echo -e "  ${C}@cipher${NC}   → Reverse engineering & cryptography"
-echo -e "  ${C}@sentinel${NC} → Blue team, forensics & threat hunting"
-echo -e "  ${C}@scribe${NC}   → Professional report generation"
-echo ""
-echo -e "  ${Y}Start:${NC} opencode"
-echo ""
