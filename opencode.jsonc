@@ -1,20 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
 
-  // ══════════════════════════════════════════════════════
-  //   MYTHOX CYBER OPS — OpenCode Configuration
-  //   6 Specialized Agents | Free Models via OpenCode Zen
-  // ══════════════════════════════════════════════════════
+  "model": "zen/mimo-v2.5-free",
 
-  // النموذج الافتراضي
-  "model": "zen/north-mini-code-free",
-
-  // ── Provider: OpenCode Zen (مجاني 100%) ──────────────
-  // لا يحتاج API key — فقط: opencode auth login → اختر Zen
   "provider": {
     "zen": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "OpenCode Zen 🆓",
+      "name": "OpenCode Zen (Free)",
       "options": {
         "baseURL": "https://opencode.ai/zen/v1"
       },
@@ -39,24 +31,12 @@
     }
   },
 
-  // ── Permissions (allow all for pentest work) ──────────
   "permission": {
-    "bash": {
-      "*": "allow"
-    },
-    "read": {
-      "*": "allow"
-    },
-    "write": {
-      "*": "allow"
-    },
-    "edit": {
-      "*": "allow"
-    }
+    "bash": { "*": "allow" },
+    "read": { "*": "allow" },
+    "write": { "*": "allow" },
+    "edit": { "*": "allow" }
   },
-
-  // ── Theme ─────────────────────────────────────────────
-  "theme": "opencode",
 
   "autoupdate": true
 }
