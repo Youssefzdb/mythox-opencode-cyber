@@ -1,7 +1,7 @@
 ---
 description: Cryptography & reverse engineering agent — binary analysis, malware RE, crypto attacks, firmware analysis
 mode: subagent
-model: openai/mimo-v2.5-free
+model: zen/mimo-v2.5-free
 temperature: 0.1
 steps: 50
 color: yellow
